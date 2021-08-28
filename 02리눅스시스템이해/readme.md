@@ -3,14 +3,10 @@
 
 ## 목차
 
-[2.1 리눅스와 하드웨어](#리눅스와-하드웨어)
+[2.1 하드웨어의 이해](#하드웨어의-이해)
 
-[2.1.1 하드웨어의 이해](#하드웨어의-이해)
 
-## 2.1
-## 리눅스와 하드웨어
-
-### 2.1.1
+### 2.1
 ### 하드웨어의 이해
 
     리눅스 설치 및 운영에 있어 CPU, 메모리, 하드디스크 등에 대한 정보는 필수 정보이다.
@@ -40,7 +36,7 @@
     키보드 및 마우스
         리눅스는 현재 존재하는 키보드와 마우스를 대부분 지원한다.
 
-### 2.1.2
+### 2.2
 ### 하드웨어의 선택
 
     RAID (Redundant Array of Independent[Inexpensive] Disks)
@@ -61,7 +57,7 @@
         디스크에 에러가 발생 시 데이터의 손실을 막기 위해 
         추가적으로 하나 이상의 장치에 중복 저장하는 기술
 
-### 2.1.3
+### 2.3
 ### RAID의 종류
 
 |종류|특징|단점|
@@ -78,7 +74,7 @@
 |RAID-10|* RAID- 0+1의 반대 개념으로써 디스크 2개를 미러링으로 구성 후 다시 스트라이핑 하는 방식이다.||
 |RAID-53|* RAID-3 방식에 별도로 스트라이프 어레이를 구성하는 방식이다. <br>* RAID-3 보다 높은 성능을 제공한다.|* 구성 비용이 많이 든다.|
 
-### 2.1.4
+### 2.4
 ### LVM
 
     LVM (Logical Volume Manager) 개요
@@ -97,7 +93,7 @@
         PV 에서 나누어 사용하는 일종의 블록 같은 영역이다.
         보통 1 PE 가 4 MB 정도씩 할당된다.
 
-### 2.1.5
+### 2.5
 ### 리눅스의 구조
 
     부트매니저
@@ -156,7 +152,7 @@
         splashimage=(hd0,3)/boot/grub/splash.xpm.gz
             GRUB 화면의 배경 이미지를 지정하는 부분이다.
 
-### 2.1.6
+### 2.6
 ### 디렉터리 구조 및 역할
 
     디렉터리(Directory)의 개요
@@ -219,7 +215,7 @@
 
 <img src="../images/02/2106root_directory.png">
 
-### 2.1.7
+### 2.7
 ### 부팅과 셧다운
 
     부팅은 컴퓨터의 전원이 켜진 후 운영체제가 가동되어 사용자가 컴퓨터를 사용할 수 있도록 만들어주는 과정이다.
@@ -281,14 +277,14 @@
     리눅스에서 로그인만 하고 로그아웃을 하지 않으면 
     자원이 낭비되는 것 뿐먼 아니라 보안상의 위험이 발생할 수 있기 때문에 반드시 로그아웃을 하여야 한다.
 
-### 2.1.8
+### 2.8
 ### root 비밀번호 분실 시 복구방법
 
     1. 재부팅하여 grub 부트 메뉴로 접속한다. 부팅 초기화면에서 e 입력시 접속가능하다.
     2. 해당 운영체제를 선택 후 a 키를 눌러 커널어규먼트에서 줄의 끝을 single 또는 1로 수정한다
     3. 단일 사용자 모드로 접속 후 password 명령어를 통해 패스워드를 수정한다.
 
-### 2.1.9
+### 2.9
 ### GRUB, root 패스워드 분실 시 복구법
 
     1. 설치 디스크를 이용해 부팅을 한다.
@@ -299,7 +295,7 @@
     6. /boot/grub/grub.cont 파일을 열어 password 항목을 삭제한다.
     7. 재부팅하여 패스워드를 복구한다.
 
-### 2.1.10
+### 2.10
 ### 시스템 종료 (shutdown)
 
     셧다운이란 시스템의 전원을 끄거나 종료하는 행위를 일컫는다.
@@ -357,7 +353,7 @@
         init [LV]
         Ex) init 0
 
-### 2.1.11
+### 2.11
 ### 리눅스 파일 시스템의 이해
 
     파일 시스템이란 운영체제가 파티션이나 디스크에 데이터를 저장, 읽고, 쓰고, 찾기 위해 구성하는 일련의 체계를 의미한다.
@@ -413,3 +409,247 @@
 
     리눅스 파일 시스템의 구조
     
+    일반적으로 디스크 드라이브 이용시의 형태
+
+    i-list 와 Directory Blocks and Data Blocks 관계
+
+    Format(mkfs)
+    Disk Dirve  [Partition] [Partition] [Partition]
+    
+    Filesystem
+    Partition   [Boot Block] [Super Block] [i-list] [Directory Blocks and Data Blocks]
+    
+    Directory Blocks and Data Blocks
+                [Data Block] [Data Block] [Data Block] ... [Directory Block]
+                     ↑            ↑             ↑
+    i-list        [i-node]     [i-node]      [i-node] ... [i-node]
+                      ↑
+    Directory Block [[i-node number], [file name]] [[i-node number], [file name]] ...
+
+    리눅스 파일 시스템은 보통 ext4 를 사용한다. 
+    그렇지만 ext4는 ext2를 기반으로 확장된 파일 시스템임이므로 ext2 구조를 보자
+
+    Format(mkfs)
+    Disk Drive  [MBR] [Reserved] [Partition 1] ... [Partition N]
+
+    Filesystem  [Boot Block] [Block Group 0] [Block Group 1] ... [Block Group N]
+
+    Block Group [Super Block] [Group Descriptors] [Block Bitmap] [Inode Bitmap] [Inode Table] [Data Blocks]
+
+    Super Block     : 파일 시스템에 대한 전체적인 정보를 가지고 있다. 
+    Block Bipmap    : 블록의 사용 현황을 비트로 표현해준다.
+    Inode Bipmap    : 아이노드 할당 상태를 비트로 표현해준다.
+    Inode Table     : 파일이나 디렉터리 관리를 위해 아이노드라는 것을 사용하는데. 이 아이노드에 대한 정도박 들어있는 영역이다.
+
+### 2.12
+### X 윈도
+    
+    X Window
+    * 네트워크 프로토콜에 기반을 둔 그래픽 사용자 인터페이스 환경이다.
+    * 클라이언트/서버 구조로 되어 있다.
+    * 서로간의 통신을 위해 X Protocol을 사용한다.
+    
+    [Keyboard] [Mouse] [Screen]
+    [    ↓        ↓       ↑
+        [---------X Server----------] ─────────────┐
+            ↕                 ↕                    │
+        [X client(browser)] [X client(xterm)]     // Network
+    ]                      Remote machine [X client(xterm)]
+
+    Xlib와 X 관련 라이브러리
+    Xlib는 C언어로 구현된 클라이언트 라이브러리로 X 서버와 대화를 해주는 역할을 한다.
+    개발자들은 관련 프로토콜에 관한 자셓나 정보 없이도 Xlib를 통해 다양한 프로그램을 구현할 수 있게 된다.
+
+
+    XFree86 : IBM 호환 시스템을 사용하는 유닉스 계열 운영체제를 위한 X 윈도 프로젝트이다.
+    X.org   : X.org Foundation에서 관리되는 X 서버 패키지로 보통 X.org Server라 부른다.
+
+### 2.13
+### 데스크톱 환경
+
+    데스크톱 환경이란 GUI 환경을 이용하기 위해 사용자에게 제공되는 인터페이스 스타일을 말한다.
+    보통 리눅스 환경에서는 GNOME, KDE, Xfce, LXDE 등이 있다.
+
+    KDE (K Desktop Enviroment)
+    * 마티아스 에트리히가 Qt 라이브러리를 기반으로 만들었다.
+    * GPL 라이선스이다.
+    * FreeBSD, Solaris. Microsoft Windows, OS X 등도 자원한다.
+
+    GNOME (GNU Network Object Model Emviroment)
+    * GNU에서 만든 공개형 디스크톱 환경이다
+    * GTK+ 라이브러리를 사용하여 개발되었다.
+    * LGPL, GPL을 따른다
+    * 재사용이 쉽도록 코드를 공개하였고, 특별한 기술 없이도 손쉽게 사용할 수 있도록 만들어진다.
+    * GNOME 초기에는 nautilus 파일관리자를 사용했다.
+    * GNOME 2 에는 metacity라는 윈도 매니저를 사용했다.
+    * GNOME 3 Mutter(GNOME Shell)이라는 윈도매니저가 사용되고있다.
+
+### 2.14
+### 윈도 매니저
+
+    윈도 매니저는 X 윈도 환경에서 윈도의 배치와 표현을 담당하는 시스템 소프트웨어이다.
+    창 여닫기, 최소화 및 최대화, 이동, 크기조정 등의 기능, Dock, Task bar, Program launcher 등의 유틸도 제공한다.
+
+    [user] <-> [graphical interface] <-> [display server] <-> [kernel] <-> [hardware]
+                                                          <-> [window manager]
+
+    윈도 매니저의 종류
+    Mutter      : GNOME3
+    Metacity    : GNOME2
+    Kwin        : KDE
+
+### 2.15
+### X 윈도 활용
+
+    X 윈도는 X서버와 X 클라이언트가 독립적으로 동작하는 네트워크 지향 시스템이다.
+    때문에 원격지의 X 클라이언트를 다른 시스템의 X 서버에서 실행시킬 수 있다.
+    이 때 사용하는 xhost이다.
+    또한 X 클라이언트에서 원격지의 X 서버에 프로그램이 전달되기 위해서는
+    실행되는 터미널이 정의되어있는 환경 변수인 DISPLAY를 수정해야 한다.
+
+    xhost : X 서버에 접근할 수 있는 클라이언트를 지정하거나 해제하는 명령이다.
+        # xhost [+|- defualt = +] [IP주소 또는 도메인명] 
+        
+        # xhost
+        => 현재 설정된 접근 목록을 출력
+
+        # xhost +
+        => 모든 클라이언트의 접속을 허용
+
+        # xhost -
+        => 모든 클라이언트의 접속을 차단
+
+        # xhost + 192.168.12.22
+        # xhost 192.168.12.22
+        => 192.168.12.22의 접속을 허가한다.
+
+        # xhost - 192.168.12.22
+        => 192.168.12.22의 접속을 차단한다.
+
+    DISPLAY : X 클라이언트 프로그램이 실행될 때 표시되는 창이 설정되어 있는 환경 변수이다.
+
+<img src="../images/02/215DISPLAY.png">
+
+        :x.y
+
+        x는 시스템에 실행되고 있는 첫 번째 x윈도 값
+        y는 첫 번째 모니터 값
+
+        # export DISPLAY="203.247.51.100:0.1"
+        => X 클라이언트 프로그램을 203.247.51.100의 첫 번째 실행된 X 서버의 두 번재 모니터로 전송한다.
+
+    xauth : 접근 허가 파일 관련 도구이다.
+
+### 2.16
+### 응용 프로그램
+
+    GIMP : 사진이나 그림을 편집하는 자유 소프트웨어이다.
+
+    Totem : GNOME 데스크톱 기반의 Movie Player 이다.
+
+    KMid : 미디 및 노래방 파일 플레이어이다.
+
+    ImageMagick : 비트맵 이미지를 보여주고, 생성 및 편집이 가능하도록 지원해주는 프로그램 패키지 이다.
+
+    eog: Eye of GNOME의 약자로, GNOME 데스크톱에서 제공하는 이미지 뷰어 프로그램이다.
+
+    kdegraphics : KDE에서 제공하는 그래픽관련 프로그램 패키지이다.
+
+    Rhythmbox : GStreamer Media Framework에 기반을 둔 통합형 음악 관리 프로그램이다.
+
+    envince : 멀티 페이지 문서 뷰어 프로그램이다.
+
+    LibreOffice : 무료로 배포되는 오피스 프로그램 패키지이다.
+
+### 2.17
+### 셸 Shell
+
+    셸은 커널과 사용자 간의 다리 역할을 하는것이다.
+    다시 말하면사용자로 부터 명령을 받아 그것을 해거하고 프로그램을 실행하는 역할을 한다.
+    리눅스는 sh를 기본으로 ksh와 csh 계열의 장점을 결합한 bash(Bourne Again shell)을 표준으로 하고 있다.
+
+    주요 셸 종류 및 특징
+    * Bourne Shell  : 유닉스 버전 7의 기본 셸이다.
+    * bash          : 본셸을 기반으로 만들어졌으며 현재 리눅스의 표준 셸이다.
+                      sh와 호환되고. ksh, csh의 유요한 기능들을 참고하였다.
+                      명령 히스토리, 명령어 완성기능, 히스토리 치환, 명령행 편집 등을 지원하고 POSIX와 호환된다.
+    * csh           : C셸이라 불리며, C언어를 기반의 프로그램에 대하여 강력한 프로그램 작성 기능을 가지고있다.
+                      히스토리기능, 별명, 직접제어등의 기능을 가지고있다.
+    * tcsh          : TENEX 라는 운영체제의 명령행 완성기능과, C shell을 통합해서 만들어졌다. (The enhanced C shell)
+                      명령어 완성기능, 명령행 편집 기능을 추가 지원한다.
+    * ksh           : 콘셸이라고 불리며 본셸을 확장판이며 C shell 의 많은 기능이 추가되었다.
+                      작업제어, 앨리어스, 히스토리, Vi, 명령행 편집, 완성 기능을 제공한다.
+    * dash          : (Debian Almquist shell) POSIX 호환되는 /bin/sh를 작게 구현한 셸로 빠른 작업수행이 특징이다.
+                      ash에서 파생된 것으로 데비안 계열의 기본 셸이다.
+                      Bash와 비교해 소스 크기도 매우 작고, 처리속도도 빠르지만, history 명령 등은 지원하지 않는다.
+
+### 2.18
+### 셸 다루기
+
+    현재 사용중인 셸 확인
+    # echo $SHELL
+
+<img src="../images/02/218echoSHELL.png">
+
+    변경 가능한 셸 확인
+    # chsh -l
+    # cat /etc/shells
+
+<img src="../images/02/218chsh_l.png">
+
+<img src="../images/02/218catshells.png">
+
+    셸 변경
+    # chsh [shell 절대경로]
+
+    사용자 로그인 셸 정보 확인
+    # grep posein /etc/passwd
+
+    셸 변수
+
+    특정 셸에서만 적용되는 변수를 말한다.
+    
+<img src="../images/02/218shellvar.png">
+
+    환경 변수
+    프롬프트 변경, PATH 변경 등과 같이 셸의 환경을 정의하는 중요한 역할을 수행하는 변수를 말한다.
+    환경변수는 미리 예약된 변수명을 사용하고, bash에서는 PATH, SHELL등과 같이 대문자로 된 변수로 구성되어있다.
+    현재 설정된 전체 환경 변수의 값은 env 명령으로 확인 가능하다.
+
+<img src="../images/02/218localvar.png">
+
+    주요 환경변수들
+|변수|내용|
+|---|---|
+|HOME|사용자의 홈 디렉터리|
+|PATH|실행 파일을 찾는 디렉터리 경로|
+|LANG|셸 사용 시 기본으로 지원되는 언어|
+|TERM|로그인한 터미널 종류|
+|PWD|사용자의 현재 실행 디렉터리|
+|SHELL|사용자의 로그인 셸|
+|USER|사용자의 이름|
+|DISPLAY|X 위녿에서 프로그램 실행 시 출력되는참|
+|PS1|프롬프트(Prompt) 변수|
+|PS2|2차 프롬프트 변수|
+|HISTFILE|히스토리 파일의 경로|
+|HISTSIZE|히스토리 파일에 저장되는 명령어의 개수|
+|HISTFILESIZE|히스토리 파일의 크기
+|HOSTNAME|시스템의 호스트 명|
+|MAIL|도착한 메일이 저장되는 경로|
+|TMOUT|사용자가 로그인한 후 일정 시간동안 작업을 하지 않을 경우에 로그아웃 시키는 시간, 단위는 초|
+|UID|사용자의 UID|
+
+    주요 프롬프트 형식
+|형식|설명|
+|---|---|
+|\d|요일 월 일 형태로 날짜를 표시한다.|
+|\h|호스트 이름을 표시한다.|
+|\s|사용중인 셸 이름을 표시한다.|
+|\t|24시 형태의 현재 시간을 표시한다.|
+|\T|12시 형태의 현재 시간을 표시한다.|
+|\@|12시 형태의 현재 시간에 AP\PM을 추가한다.|
+|\u|현재 사용자의 이름을 표시한다.|
+|\w|현재 작업 디렉터리를 절대 경로로 표시한다.|
+|\W|현재 작업 디렉터리의 전체 경로 중 마지막 디렉터리만 표시한다.|
+|\!|현재 명령의 히스토리 넘버를 보여준다|
+|\\|\를 표시한다.|
